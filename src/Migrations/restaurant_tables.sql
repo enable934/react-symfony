@@ -1,0 +1,15 @@
+INSERT INTO restaurant.tables (id, number) VALUES (1, 1);
+INSERT INTO restaurant.tables (id, number) VALUES (2, 2);
+INSERT INTO restaurant.tables (id, number) VALUES (3, 3);
+INSERT INTO restaurant.tables (id, number) VALUES (4, 4);
+INSERT INTO restaurant.tables (id, number) VALUES (5, 5);
+INSERT INTO restaurant.tables (id, number) VALUES (6, 6);
+INSERT INTO restaurant.tables (id, number) VALUES (7, 7);
+INSERT INTO restaurant.tables (id, number) VALUES (8, 8);
+INSERT INTO restaurant.tables (id, number) VALUES (9, 9);
+INSERT INTO restaurant.tables (id, number) VALUES (10, 10);
+INSERT INTO restaurant.tables (id, number) VALUES (11, 11);
+INSERT INTO restaurant.tables (id, number) VALUES (12, 12);
+INSERT INTO restaurant.tables (id, number) VALUES (13, 13);
+INSERT INTO restaurant.tables (id, number) VALUES (14, 14);
+INSERT INTO restaurant.tables (id, number) VALUES (15, 15);
