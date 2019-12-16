@@ -18,8 +18,11 @@ class DataFixtures extends Fixture
     }
 
     private function loadTables(ObjectManager $manager):void {
+        /** @var Restaurant $restaurant */
+        $restaurant = $manager->getRepository(Restaurant::class)->find(1);
         for ($i=1;$i<=25;$i++){
             $table = new Table();
+            $restaurant->addTable($table);
             $table->setNumber($i);
             $manager->persist($table);
         }
@@ -28,7 +31,10 @@ class DataFixtures extends Fixture
 
     private function loadOrders(ObjectManager $manager): void
     {
+        /** @var Restaurant $restaurant */
+        $restaurant = $manager->getRepository(Restaurant::class)->find(1);
         $order = new Order();
+        $restaurant->addOrder($order);
         $now = new \DateTimeImmutable();
         $order->setDate($now);
         $order->setTimeFrom($now);
