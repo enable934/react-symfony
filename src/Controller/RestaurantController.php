@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Serializer;
 class RestaurantController extends AbstractController
 {
     /**
-     * @Route("/api/tables", name="tables")
+     * @Route("/api/restaurants", name="restaurants")
      */
     public function index(EntityManagerInterface $entityManager): JsonResponse
     {

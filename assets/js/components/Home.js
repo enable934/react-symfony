@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Route, Switch,Redirect, Link, withRouter} from 'react-router-dom';
-import Tables from "./Tables";
+import Restaurant from "./Restaurant";
 
 class Home extends Component {
 
@@ -12,14 +12,14 @@ class Home extends Component {
                     <div className="collapse navbar-collapse" id="navbarText">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <Link className={"nav-link"} to={"/tables"}> Столики </Link>
+                                <Link className={"nav-link"} to={"/restaurants"}> Ресторани </Link>
                             </li>
                         </ul>
                     </div>
                 </nav>
                 <Switch>
-                    <Redirect exact from="/" to="/tables" />
-                    <Route path="/tables" component={Tables} />
+                    <Redirect exact from="/" to="/restaurants" />
+                    <Route path="/restaurants" component={Restaurant} />
                 </Switch>
             </div>
         )
