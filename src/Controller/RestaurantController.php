@@ -24,8 +24,8 @@ class RestaurantController extends AbstractController
      */
     public function index(EntityManagerInterface $entityManager): JsonResponse
     {
-        /** @var Restaurant[] $tables */
-        $tables = $entityManager->getRepository(Restaurant::class)->findAll();
+        /** @var Restaurant[] $restaurants */
+        $restaurants = $entityManager->getRepository(Restaurant::class)->findAll();
         $encoder = new JsonEncoder();
         $defaultContext = [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
@@ -35,7 +35,7 @@ class RestaurantController extends AbstractController
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext);
         $serializer = new Serializer([$normalizer], [$encoder]);
-        $tables = $serializer->serialize($tables, 'json', ['groups' => 'json']);
-        return JsonResponse::fromJsonString($tables);
+        $restaurants = $serializer->serialize($restaurants, 'json', ['groups' => 'json']);
+        return JsonResponse::fromJsonString($restaurants);
     }
 }
