@@ -66,7 +66,7 @@ class Tables extends Component {
                 <section className="row-section">
                     <div className="container">
                         <div className="row">
-                            <h2 className="text-center"><span>Усі столики</span><i className="fa fa-heart"></i></h2>
+                            <h2 className="text-center"><span>Усі столики</span><i className="fa fa-heart"/></h2>
                         </div>
                         <form method={'POST'} onSubmit={this.onSubmitForm}>
                             <div className={'row form-group'}>
@@ -110,7 +110,7 @@ class Tables extends Component {
                             <button className="btn btn-block btn-primary" type={'submit'}>Підтвердити</button>
                             {loading ? (
                                 <div className={'row text-center'}>
-                                    <span className="fa fa-spin fa-spinner fa-4x"></span>
+                                    <span className="fa fa-spin fa-spinner fa-4x"/>
                                 </div>
                             ) : (
                                 <div className={'row'}>
@@ -142,7 +142,7 @@ class Tables extends Component {
 
     onSubmitForm(event) {
         event.preventDefault();
-        let loading = `<div id="loader" class="row text-center"><span class="fa fa-spin fa-spinner fa-4x"></span></div>`;
+        let loading = `<div id="loader" class="row text-center"><span class="fa fa-spin fa-spinner fa-4x"/></div>`;
         $('.container').prepend(loading);
         fetch('/api/order/new', {
             method: 'POST',
