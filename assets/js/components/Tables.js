@@ -127,7 +127,8 @@ class Tables extends Component {
                                                      title={'Номер стола №' + table.number}
                                                      src={this.checkOrderByDateAndTime(table) ? (require('../../img/table-busy.png')) : (require('../../img/table.png'))}
                                                      width={200}/>
-                                                <h5>№ {table.number}</h5>
+                                                <h5>№ {table.number}</h5>{this.checkOrderByDateAndTime(table)?
+                                                <span className="badge badge-warning">занято: {this.getOrderByDateAndTime(table)}</span>:<span className="badge badge-success">вільно</span>}
                                                 <button disabled={this.checkOrderByDateAndTime(table) ? 'disabled' : ''}
                                                         onClick={() => this.addToPocket(table)} type={'button'}
                                                         className="btn btn-outline-primary m-1">забронювати
@@ -222,6 +223,29 @@ class Tables extends Component {
             }
         }
         return false;
+    }
+
+    getOrderByDateAndTime(table) {
+        const totalSecondsFrom = Number.parseInt(this.state.timeFrom.substr(0, 2)) * 60
+            + Number.parseInt(this.state.timeFrom.substr(3, 2));
+        const totalSecondsTo = Number.parseInt(this.state.timeTo.substr(0, 2)) * 60
+            + Number.parseInt(this.state.timeTo.substr(3, 2));
+        for (const order of table.orders){
+            if (this.state.date === JSON.parse(order.date).date.substr(0, 10)) {
+                const orderTimeFrom = JSON.parse(order.timeFrom).date;
+                const orderTimeTo = JSON.parse(order.timeTo).date;
+                const totalOrderSecondsFrom = Number.parseInt(orderTimeFrom.substr(11, 2)) * 60
+                    + Number.parseInt(orderTimeFrom.substr(14, 2));
+                const totalOrderSecondsTo = Number.parseInt(orderTimeTo.substr(11, 2)) * 60
+                    + Number.parseInt(orderTimeTo.substr(14, 2));
+                if ((totalOrderSecondsFrom >= totalSecondsFrom && totalOrderSecondsTo <= totalSecondsTo)
+                    || (totalSecondsFrom < totalOrderSecondsFrom && (totalSecondsTo >= totalOrderSecondsFrom && totalSecondsTo <= totalOrderSecondsTo))
+                    || (totalSecondsTo > totalOrderSecondsFrom && (totalSecondsFrom >= totalOrderSecondsFrom && totalSecondsFrom <= totalOrderSecondsTo))) {
+                    return `з ${orderTimeFrom.substr(11, 5)} по ${orderTimeTo.substr(11, 5)}`;
+                }
+            }
+        }
+        return '';
     }
 
     getDefaultDate() {
