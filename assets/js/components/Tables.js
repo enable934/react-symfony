@@ -116,83 +116,86 @@ class Tables extends Component {
                                 <div className={'row'}>
                                     {this.state.tables.map((table, index) =>
                                         <div className={"d-flex justify-content-around m-2"}>
-                                                <div style={{backgroundColor: this.state.selectedTables.includes(table.id) ? 'DodgerBlue' : 'white'}} key={table.id}>
-                                                    <img alt={'Номер стола №' + table.number}
-                                                         title={'Номер стола №' + table.number}
-                                                         src={table.orders.length > 0 ? (require('../../img/table-busy.png')) : (require('../../img/table.png'))}
-                                                         width={200}/>
-                                                    <h5>№ {table.number}</h5>
-                                                    <button disabled={table.orders.length > 0 ? 'disabled' : ''}
-                                                            onClick={() => this.addToPocket(table)} type={'button'}
-                                                            className="btn btn-block btn-default">забронювати
-                                                    </button>
-                                                </div>
+                                            <div
+                                                style={{backgroundColor: this.state.selectedTables.includes(table.id) ? 'DodgerBlue' : 'white'}}
+                                                key={table.id}>
+                                                <img alt={'Номер стола №' + table.number}
+                                                     title={'Номер стола №' + table.number}
+                                                     src={table.orders.length > 0 ? (require('../../img/table-busy.png')) : (require('../../img/table.png'))}
+                                                     width={200}/>
+                                                <h5>№ {table.number}</h5>
+                                                <button disabled={table.orders.length > 0 ? 'disabled' : ''}
+                                                        onClick={() => this.addToPocket(table)} type={'button'}
+                                                        className="btn btn-block btn-default">забронювати
+                                                </button>
                                             </div>
-                                                )}
-                                </div>
+                                        </div>
                                     )}
-                                </form>
                                 </div>
-                                </section>
-                                </div>
-                                )
-                                }
+                            )}
+                        </form>
+                    </div>
+                </section>
+            </div>
+        )
+    }
 
-                                onSubmitForm(event) {
-                                event.preventDefault();
-                                let loading = `<div id="loader" class="row text-center"><span class="fa fa-spin fa-spinner fa-4x"></span></div>`;
-                                $('.container').prepend(loading);
-                                fetch('/api/order/new', {
-                                method: 'POST',
-                                body: JSON.stringify({
-                                date: this.state.date,
-                                timeFrom: this.state.timeFrom,
-                                timeTo: this.state.timeTo,
-                                userName: this.state.userName,
-                                userPhone: this.state.userPhone,
-                                userEmail: this.state.userEmail,
-                                tables: this.state.selectedTables,
-                                }),
-                                headers: {
-                                'Content-Type': 'application/json'
-                                }
-                                }).then(response => response.json()).then((data) => {
-                                $('#loader').remove();
-                                let success = '<div class="alert alert-success alert-dismissible fade show" role="alert">\n' +
-                                `  <strong>${data.message}</strong> Ми чекатимемо вас у відповідний час.\n` +
-                                '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
-                                '    <span aria-hidden="true">&times;</span>\n' +
-                                '  </button>\n' +
-                                '</div>';
-                                let fail = '<div class="alert alert-warning alert-dismissible fade show" role="alert">\n' +
-                                `  <strong>Виникла помилка!</strong> ${data.error}\n` +
-                                '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
-                                '    <span aria-hidden="true">&times;</span>\n' +
-                                '  </button>\n' +
-                                '</div>';
-                                if (data.error.length > 0) {
-                                return $('.container').prepend(fail);
-                                }
-                                this.getTables();
-                                return $('.container').prepend(success);
-                                });
-                                }
+    onSubmitForm(event) {
+        event.preventDefault();
+        let loading = `<div id="loader" class="row text-center"><span class="fa fa-spin fa-spinner fa-4x"></span></div>`;
+        $('.container').prepend(loading);
+        fetch('/api/order/new', {
+            method: 'POST',
+            body: JSON.stringify({
+                date: this.state.date,
+                timeFrom: this.state.timeFrom,
+                timeTo: this.state.timeTo,
+                userName: this.state.userName,
+                userPhone: this.state.userPhone,
+                userEmail: this.state.userEmail,
+                tables: this.state.selectedTables,
+                restaurant: this.props.match.params.id
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => response.json()).then((data) => {
+            $('#loader').remove();
+            let success = '<div class="alert alert-success alert-dismissible fade show" role="alert">\n' +
+                `  <strong>${data.message}</strong> Ми чекатимемо вас у відповідний час.\n` +
+                '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                '    <span aria-hidden="true">&times;</span>\n' +
+                '  </button>\n' +
+                '</div>';
+            let fail = '<div class="alert alert-warning alert-dismissible fade show" role="alert">\n' +
+                `  <strong>Виникла помилка!</strong> ${data.error}\n` +
+                '  <button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                '    <span aria-hidden="true">&times;</span>\n' +
+                '  </button>\n' +
+                '</div>';
+            if (data.error.length > 0) {
+                return $('.container').prepend(fail);
+            }
+            this.getTables();
+            return $('.container').prepend(success);
+        });
+    }
 
-                                addToPocket(table) {
-                                if (this.state.selectedTables.includes(table.id)) {
-                                this.state.selectedTables = this.state.selectedTables.filter((value) => {
-                                return value !== table.id
-                                });
-                                this.setState({selectedTables: this.state.selectedTables});
-                                $('#select > option[value=' + table.id + ']').attr('selected', false);
-                                } else {
-                                $('#select > option[value=' + table.id + ']').attr('selected', true);
-                                $('.col-md-10.offset-md-1.row-block');
-                                this.state.selectedTables.push(table.id);
-                                this.setState({selectedTables: this.state.selectedTables});
-                                }
-                                console.log(this.state);
-                                }
-                                }
+    addToPocket(table) {
+        if (this.state.selectedTables.includes(table.id)) {
+            this.state.selectedTables = this.state.selectedTables.filter((value) => {
+                return value !== table.id
+            });
+            this.setState({selectedTables: this.state.selectedTables});
+            $('#select > option[value=' + table.id + ']').attr('selected', false);
+        } else {
+            $('#select > option[value=' + table.id + ']').attr('selected', true);
+            $('.col-md-10.offset-md-1.row-block');
+            this.state.selectedTables.push(table.id);
+            this.setState({selectedTables: this.state.selectedTables});
+        }
+        console.log(this.state);
+    }
+}
 
-                                export default Tables;
+export default Tables;
