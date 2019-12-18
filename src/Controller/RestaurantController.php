@@ -46,7 +46,7 @@ class RestaurantController extends AbstractController
     public function getTables(Restaurant $restaurant, EntityManagerInterface $entityManager): JsonResponse
     {
         /** @var Table[] $tables */
-        $tables = $entityManager->getRepository(Table::class)->findAll();
+        $tables = $entityManager->getRepository(Table::class)->findBy(['restaurant' => $restaurant]);
         $encoder = new JsonEncoder();
         $defaultContext = [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {

@@ -116,7 +116,7 @@ class Tables extends Component {
                                 <div className={'row'}>
                                     {this.state.tables.map((table, index) =>
                                         <div className={"d-flex justify-content-around m-2"}>
-                                            <div
+                                            <div className="text-center"
                                                 style={{backgroundColor: this.state.selectedTables.includes(table.id) ? 'DodgerBlue' : 'white'}}
                                                 key={table.id}>
                                                 <img alt={'Номер стола №' + table.number}
@@ -126,7 +126,7 @@ class Tables extends Component {
                                                 <h5>№ {table.number}</h5>
                                                 <button disabled={table.orders.length > 0 ? 'disabled' : ''}
                                                         onClick={() => this.addToPocket(table)} type={'button'}
-                                                        className="btn btn-block btn-default">забронювати
+                                                        className="btn btn-outline-primary m-1">забронювати
                                                 </button>
                                             </div>
                                         </div>
