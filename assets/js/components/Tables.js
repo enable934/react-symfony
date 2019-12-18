@@ -30,7 +30,7 @@ class Tables extends Component {
     }
 
     getTables() {
-        axios.get(`http://localhost:25558/api/tables`).then(tables => {
+        axios.get(`http://localhost:25558/api/${this.props.match.params.id}/tables`).then(tables => {
             this.setState({tables: tables.data, loading: false, selectedTables: []})
         })
     }

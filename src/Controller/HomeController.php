@@ -15,12 +15,4 @@ class HomeController extends AbstractController
     {
         return $this->render('home/index.html.twig', []);
     }
-    /**
-     * @Route("/test/test", name="test")
-     */
-    public function test()
-    {
-        $form = $this->createForm(OrderType::class);
-        return $this->render('test.html.twig', ['form' => $form->createView()]);
-    }
 }

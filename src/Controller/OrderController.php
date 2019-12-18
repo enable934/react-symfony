@@ -1,11 +1,13 @@
 <?php
 
+
 namespace App\Controller;
 
+
 use App\Entity\Order;
+use App\Entity\Restaurant;
 use App\Entity\Table;
 use App\Form\OrderType;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,35 +15,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
-class DataController extends AbstractController
+class OrderController extends AbstractController
 {
-    /**
-     * @Route("/api/tables", name="tables")
-     */
-    public function index(EntityManagerInterface $entityManager): JsonResponse
-    {
-        /** @var Table[] $tables */
-        $tables = $entityManager->getRepository(Table::class)->findAll();
-        $encoder = new JsonEncoder();
-        $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
-                return $object->getId();
-            },
-        ];
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext);
-        $serializer = new Serializer([$normalizer], [$encoder]);
-        $tables = $serializer->serialize($tables, 'json', ['groups' => 'json']);
-        return JsonResponse::fromJsonString($tables);
-    }
-
     /**
      * @Route("/api/order/new", name="order_new", methods={"POST"})
      */
@@ -51,6 +27,10 @@ class DataController extends AbstractController
         if ($data === null) {
             throw new BadRequestHttpException('Invalid JSON');
         }
+        /** @var Restaurant $restaurant */
+        $restaurant = $entityManager->getRepository(Restaurant::class)->find($data['restaurant']);
+        $order = new Order();
+        $order->setRestaurant($restaurant);
         $form = $this->createForm(OrderType::class, null, [
             'csrf_protection' => false,
         ]);
@@ -77,7 +57,7 @@ class DataController extends AbstractController
         ){
             return new JsonResponse(['error' => 'На цю дату вже є замовлення'], 400);
         }
-            $entityManager->persist($order);
+        $entityManager->persist($order);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Успішно заброньовано!', 'error' => '']);
@@ -94,7 +74,7 @@ class DataController extends AbstractController
                 if (
                     ($order->getTimeFrom() >= $timeFrom && $order->getTimeTo() <= $timeTo)
                     || ($timeFrom < $order->getTimeFrom() && ($timeTo >= $order->getTimeFrom() && $timeTo <= $order->getTimeTo()))
-                        || ($timeTo > $order->getTimeFrom() && ($timeFrom >= $order->getTimeFrom() && $timeFrom <= $order->getTimeTo()))
+                    || ($timeTo > $order->getTimeFrom() && ($timeFrom >= $order->getTimeFrom() && $timeFrom <= $order->getTimeTo()))
                 ) {
                     return true;
                 }
@@ -102,4 +82,5 @@ class DataController extends AbstractController
         }
         return false;
     }
+
 }

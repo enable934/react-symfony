@@ -31,6 +31,7 @@ class OrderType extends AbstractType
             ->add('userEmail')
             ->add('userName')
             ->add('tables')
+            ->add('restaurant')
         ;
     }
 
