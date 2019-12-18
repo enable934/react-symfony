@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useRouteMatch
+} from "react-router-dom";
+import Tables from "./Tables";
 
 class Restaurant extends Component {
     constructor() {
@@ -39,7 +47,9 @@ class Restaurant extends Component {
                                     <div className="col-md-10 offset-md-1 row-block" key={restaurant.id}>
                                         <div>
                                             <div>
-                                                <h5>{restaurant.name}</h5>
+                                                <Link className={"nav-link"} to={`restaurant/${restaurant.id}`}>
+                                                    <h5>{restaurant.name}</h5>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>
