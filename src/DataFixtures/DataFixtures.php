@@ -20,9 +20,16 @@ class DataFixtures extends Fixture
     private function loadTables(ObjectManager $manager):void {
         /** @var Restaurant $restaurant */
         $restaurant = $manager->getRepository(Restaurant::class)->find(1);
+        $restaurant2 = $manager->getRepository(Restaurant::class)->find(2);
         for ($i=1;$i<=25;$i++){
             $table = new Table();
             $restaurant->addTable($table);
+            $table->setNumber($i);
+            $manager->persist($table);
+        }
+        for ($i=1;$i<=15;$i++){
+            $table = new Table();
+            $restaurant2->addTable($table);
             $table->setNumber($i);
             $manager->persist($table);
         }
@@ -50,7 +57,10 @@ class DataFixtures extends Fixture
     private function loadRestaurant(ObjectManager $manager): void{
         $restaurant = new Restaurant();
         $restaurant->setName('Rabbit\'s restaurant');
+        $restaurant2 = new Restaurant();
+        $restaurant2->setName('Рататуй restaurant');
         $manager->persist($restaurant);
+        $manager->persist($restaurant2);
         $manager->flush();
     }
 }
