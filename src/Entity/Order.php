@@ -27,16 +27,19 @@ class Order
 
     /**
      * @ORM\Column(type="date")
+     * @var \DateTimeInterface
      */
     private $date;
 
     /**
      * @ORM\Column(type="time")
+     * @var \DateTimeInterface
      */
     private $timeFrom;
 
     /**
      * @ORM\Column(type="time")
+     * @var \DateTimeInterface
      */
     private $timeTo;
 

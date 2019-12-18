@@ -27,6 +27,7 @@ class Tables extends Component {
 
     componentDidMount() {
         this.getTables();
+        this.setState({date: this.getDefaultDate()});
     }
 
     getTables() {
@@ -71,19 +72,22 @@ class Tables extends Component {
                         <form method={'POST'} onSubmit={this.onSubmitForm}>
                             <div className={'row form-group'}>
                                 <label style={{color: 'white'}} htmlFor="date">Оберіть дату:
-                                    <input className={"form-control"} onChange={this.dateHandler} type="date" id="date"
+                                    <input defaultValue={this.state.date} className={"form-control"}
+                                           onChange={this.dateHandler} type="date" id="date"
                                            name="date" required/>
                                 </label>
                             </div>
                             <div className={'row form-group'}>
                                 <label style={{color: 'white'}} htmlFor="timeFrom">Виберіть час з котрої: </label>
-                                <input className={"form-control"} onChange={this.timeFromHandler} id="timeFrom"
+                                <input className={"form-control"}
+                                       onChange={this.timeFromHandler} id="timeFrom"
                                        type="time" name="timeFrom"
                                        step="2" required/>
                             </div>
                             <div className={'row form-group'}>
                                 <label style={{color: 'white'}} htmlFor="timeTo">Виберіть час до котрої: </label>
-                                <input className={"form-control"} onChange={this.timeToHandler} id="timeTo" type="time"
+                                <input className={"form-control"}
+                                       onChange={this.timeToHandler} id="timeTo" type="time"
                                        name="timeTo" step="2"
                                        required/>
                             </div>
@@ -117,8 +121,8 @@ class Tables extends Component {
                                     {this.state.tables.map((table, index) =>
                                         <div className={"d-flex justify-content-around m-2"}>
                                             <div className="text-center"
-                                                style={{backgroundColor: this.state.selectedTables.includes(table.id) ? 'DodgerBlue' : 'white'}}
-                                                key={table.id}>
+                                                 style={{backgroundColor: this.state.selectedTables.includes(table.id) ? 'DodgerBlue' : 'white'}}
+                                                 key={table.id}>
                                                 <img alt={'Номер стола №' + table.number}
                                                      title={'Номер стола №' + table.number}
                                                      src={table.orders.length > 0 ? (require('../../img/table-busy.png')) : (require('../../img/table.png'))}
@@ -195,6 +199,16 @@ class Tables extends Component {
             this.setState({selectedTables: this.state.selectedTables});
         }
         console.log(this.state);
+    }
+
+    checkOrderByDateAndTime(table) {
+    }
+
+    getDefaultDate() {
+        let curr = new Date();
+        let result = curr.toISOString().substr(0, 10);
+        this.setState({date: result});
+        return curr.toISOString().substr(0, 10);
     }
 }
 

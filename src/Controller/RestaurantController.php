@@ -48,10 +48,18 @@ class RestaurantController extends AbstractController
         /** @var Table[] $tables */
         $tables = $entityManager->getRepository(Table::class)->findBy(['restaurant' => $restaurant]);
         $encoder = new JsonEncoder();
+        $dateCallback = function ($innerObject, $outerObject, string $attributeName, string $format = null, array $context = []) {
+            return $innerObject instanceof \DateTimeInterface ? json_encode($innerObject) : '';
+        };
         $defaultContext = [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
                 return $object->getId();
             },
+            AbstractNormalizer::CALLBACKS => [
+                'date' => $dateCallback,
+                'timeFrom' => $dateCallback,
+                'timeTo' => $dateCallback,
+            ]
         ];
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
         $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext);
