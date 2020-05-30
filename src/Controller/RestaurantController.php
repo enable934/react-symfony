@@ -5,54 +5,44 @@ namespace App\Controller;
 
 
 use App\Entity\Restaurant;
-use App\Entity\Table;
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\RestaurantServiceInterface;
+use App\Service\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 class RestaurantController extends AbstractController
 {
     /**
      * @Route("/api/restaurants", name="restaurants")
      */
-    public function index(EntityManagerInterface $entityManager): JsonResponse
+    public function index(RestaurantServiceInterface $restaurantService, SerializerInterface $serializer): JsonResponse
     {
-        /** @var Restaurant[] $restaurants */
-        $restaurants = $entityManager->getRepository(Restaurant::class)->findAll();
-        $encoder = new JsonEncoder();
+        $restaurants = $restaurantService->getAllRestaurants();
+
         $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                 return $object->getId();
             },
         ];
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext);
-        $serializer = new Serializer([$normalizer], [$encoder]);
-        $restaurants = $serializer->serialize($restaurants, 'json', ['groups' => 'json']);
+
+        $restaurants = $serializer->serialize($restaurants, $defaultContext);
+
         return JsonResponse::fromJsonString($restaurants);
     }
 
     /**
      * @Route("/api/{id}/tables", name="tables")
      */
-    public function getTables(Restaurant $restaurant, EntityManagerInterface $entityManager): JsonResponse
+    public function getTables(Restaurant $restaurant, RestaurantServiceInterface $restaurantService, SerializerInterface $serializer): JsonResponse
     {
-        /** @var Table[] $tables */
-        $tables = $entityManager->getRepository(Table::class)->findBy(['restaurant' => $restaurant]);
-        $encoder = new JsonEncoder();
-        $dateCallback = function ($innerObject, $outerObject, string $attributeName, string $format = null, array $context = []) {
+        $tables = $restaurantService->getTablesByRestaurant($restaurant);
+        $dateCallback = function ($innerObject) {
             return $innerObject instanceof \DateTimeInterface ? json_encode($innerObject) : '';
         };
         $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                 return $object->getId();
             },
             AbstractNormalizer::CALLBACKS => [
@@ -61,10 +51,8 @@ class RestaurantController extends AbstractController
                 'timeTo' => $dateCallback,
             ]
         ];
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = new ObjectNormalizer($classMetadataFactory, null, null, null, null, null, $defaultContext);
-        $serializer = new Serializer([$normalizer], [$encoder]);
-        $tables = $serializer->serialize($tables, 'json', ['groups' => 'json']);
+        $tables = $serializer->serialize($tables, $defaultContext);
+
         return JsonResponse::fromJsonString($tables);
     }
 }

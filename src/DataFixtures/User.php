@@ -10,7 +10,6 @@ class User extends Fixture
 {
     public const USER = 'ROLE_USER';
     public const ADMIN = 'ROLE_ADMIN';
-    public const RESTAURANT_ADMIN = 'ROLE_RESTAURANT_ADMIN';
     private $passwordEncoder;
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)

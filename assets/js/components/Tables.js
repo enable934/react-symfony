@@ -31,7 +31,7 @@ class Tables extends Component {
     }
 
     getTables() {
-        axios.get(`http://localhost:25558/api/${this.props.match.params.id}/tables`).then(tables => {
+        axios.get(`http://localhost:82/api/${this.props.match.params.id}/tables`).then(tables => {
             this.setState({tables: tables.data, loading: false, selectedTables: []})
         })
     }
@@ -203,18 +203,14 @@ class Tables extends Component {
     }
 
     checkOrderByDateAndTime(table) {
-        const totalSecondsFrom = Number.parseInt(this.state.timeFrom.substr(0, 2)) * 60
-            + Number.parseInt(this.state.timeFrom.substr(3, 2));
-        const totalSecondsTo = Number.parseInt(this.state.timeTo.substr(0, 2)) * 60
-            + Number.parseInt(this.state.timeTo.substr(3, 2));
+        const totalSecondsFrom = this.getTotalSecondsFrom();
+        const totalSecondsTo = this.getTotalSecondsTo();
         for (const order of table.orders){
             if (this.state.date === JSON.parse(order.date).date.substr(0, 10)) {
-                const orderTimeFrom = JSON.parse(order.timeFrom).date;
-                const orderTimeTo = JSON.parse(order.timeTo).date;
-                const totalOrderSecondsFrom = Number.parseInt(orderTimeFrom.substr(11, 2)) * 60
-                    + Number.parseInt(orderTimeFrom.substr(14, 2));
-                const totalOrderSecondsTo = Number.parseInt(orderTimeTo.substr(11, 2)) * 60
-                    + Number.parseInt(orderTimeTo.substr(14, 2));
+                const orderTimeFrom = this.getOrderTimeFrom(order);
+                const orderTimeTo = this.getOrderTimeTo(order);
+                const totalOrderSecondsFrom = this.getTotalOrderSecondsFrom(orderTimeFrom);
+                const totalOrderSecondsTo = this.getTotalOrderSecondsTo(orderTimeTo);
                 if ((totalOrderSecondsFrom >= totalSecondsFrom && totalOrderSecondsTo <= totalSecondsTo)
                     || (totalSecondsFrom < totalOrderSecondsFrom && (totalSecondsTo >= totalOrderSecondsFrom && totalSecondsTo <= totalOrderSecondsTo))
                     || (totalSecondsTo > totalOrderSecondsFrom && (totalSecondsFrom >= totalOrderSecondsFrom && totalSecondsFrom <= totalOrderSecondsTo))) {
@@ -226,18 +222,14 @@ class Tables extends Component {
     }
 
     getOrderByDateAndTime(table) {
-        const totalSecondsFrom = Number.parseInt(this.state.timeFrom.substr(0, 2)) * 60
-            + Number.parseInt(this.state.timeFrom.substr(3, 2));
-        const totalSecondsTo = Number.parseInt(this.state.timeTo.substr(0, 2)) * 60
-            + Number.parseInt(this.state.timeTo.substr(3, 2));
+        const totalSecondsFrom = this.getTotalSecondsFrom();
+        const totalSecondsTo = this.getTotalSecondsTo();
         for (const order of table.orders){
             if (this.state.date === JSON.parse(order.date).date.substr(0, 10)) {
-                const orderTimeFrom = JSON.parse(order.timeFrom).date;
-                const orderTimeTo = JSON.parse(order.timeTo).date;
-                const totalOrderSecondsFrom = Number.parseInt(orderTimeFrom.substr(11, 2)) * 60
-                    + Number.parseInt(orderTimeFrom.substr(14, 2));
-                const totalOrderSecondsTo = Number.parseInt(orderTimeTo.substr(11, 2)) * 60
-                    + Number.parseInt(orderTimeTo.substr(14, 2));
+                const orderTimeFrom = this.getOrderTimeFrom(order);
+                const orderTimeTo = this.getOrderTimeTo(order);
+                const totalOrderSecondsFrom = this.getTotalOrderSecondsFrom(orderTimeFrom);
+                const totalOrderSecondsTo = this.getTotalOrderSecondsTo(orderTimeTo);
                 if ((totalOrderSecondsFrom >= totalSecondsFrom && totalOrderSecondsTo <= totalSecondsTo)
                     || (totalSecondsFrom < totalOrderSecondsFrom && (totalSecondsTo >= totalOrderSecondsFrom && totalSecondsTo <= totalOrderSecondsTo))
                     || (totalSecondsTo > totalOrderSecondsFrom && (totalSecondsFrom >= totalOrderSecondsFrom && totalSecondsFrom <= totalOrderSecondsTo))) {
@@ -253,6 +245,34 @@ class Tables extends Component {
         let result = curr.toISOString().substr(0, 10);
         this.setState({date: result});
         return curr.toISOString().substr(0, 10);
+    }
+
+    getTotalSecondsFrom() {
+        return Number.parseInt(this.state.timeFrom.substr(0, 2)) * 60
+        + Number.parseInt(this.state.timeFrom.substr(3, 2));
+    }
+
+    getTotalSecondsTo() {
+        return Number.parseInt(this.state.timeTo.substr(0, 2)) * 60
+            + Number.parseInt(this.state.timeTo.substr(3, 2));
+    }
+
+    getOrderTimeFrom(order) {
+        return JSON.parse(order.timeFrom).date;
+    }
+
+    getOrderTimeTo(order) {
+        return JSON.parse(order.timeTo).date;
+    }
+
+    getTotalOrderSecondsFrom(orderTimeFrom) {
+        return Number.parseInt(orderTimeFrom.substr(11, 2)) * 60
+            + Number.parseInt(orderTimeFrom.substr(14, 2));
+    }
+
+    getTotalOrderSecondsTo(orderTimeTo) {
+        return Number.parseInt(orderTimeTo.substr(11, 2)) * 60
+            + Number.parseInt(orderTimeTo.substr(14, 2));
     }
 }
 

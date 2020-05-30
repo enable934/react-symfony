@@ -7,6 +7,7 @@ use App\Entity\Restaurant;
 use App\Entity\Table;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class DataFixtures extends Fixture
 {
@@ -18,7 +19,6 @@ class DataFixtures extends Fixture
     }
 
     private function loadTables(ObjectManager $manager):void {
-        /** @var Restaurant $restaurant */
         $restaurant = $manager->getRepository(Restaurant::class)->find(1);
         $restaurant2 = $manager->getRepository(Restaurant::class)->find(2);
         for ($i=1;$i<=25;$i++){
@@ -38,7 +38,6 @@ class DataFixtures extends Fixture
 
     private function loadOrders(ObjectManager $manager): void
     {
-        /** @var Restaurant $restaurant */
         $restaurant = $manager->getRepository(Restaurant::class)->find(1);
         $order = new Order();
         $restaurant->addOrder($order);

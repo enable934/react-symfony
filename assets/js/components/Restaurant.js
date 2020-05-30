@@ -23,7 +23,7 @@ class Restaurant extends Component {
     }
 
     getRestaurants() {
-        axios.get(`http://localhost:25558/api/restaurants`).then(restaurants => {
+        axios.get(`http://localhost:82/api/restaurants`).then(restaurants => {
             this.setState({restaurants: restaurants.data, loading: false})
         })
     }
