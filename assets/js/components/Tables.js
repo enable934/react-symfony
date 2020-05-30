@@ -82,13 +82,13 @@ class Tables extends Component {
                                 <input className={"form-control"}
                                        onChange={this.timeFromHandler} id="timeFrom"
                                        type="time" name="timeFrom"
-                                       step="2" required/>
+                                       required/>
                             </div>
                             <div className={'row form-group'}>
                                 <label style={{color: 'white'}} htmlFor="timeTo">Виберіть час до котрої: </label>
                                 <input className={"form-control"}
                                        onChange={this.timeToHandler} id="timeTo" type="time"
-                                       name="timeTo" step="2"
+                                       name="timeTo"
                                        required/>
                             </div>
                             <div className={'row form-group'}>
